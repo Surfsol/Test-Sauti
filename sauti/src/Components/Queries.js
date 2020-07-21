@@ -4,15 +4,21 @@ import { gql } from "apollo-boost";
 import Graph from "./Graph";
 import Loader from "react-loader-spinner";
 import dataParse from "./dataParse";
-import getIndex from "../DataParseHelpers/getIndex"
-import graphLabels from "./graphLabels"
+import getIndex from "../DataParseHelpers/getIndex";
+import graphLabels from "./graphLabels";
 import removeMultiple from "../DataParseHelpers/removeMultiple";
 
 const GetData = props => {
   let queryType = "tradersUsers";
   let QUERY;
 
-  if (props.index.query === "Users" && props.crossFilter.query === "Users" && !props.additionalFilter.type) {
+//console.log(props)
+
+  if (
+    props.index.query === "Users" &&
+    props.crossFilter.query === "Users" &&
+    !props.additionalFilter.type
+  ) {
     queryType = "tradersUsers";
     QUERY = gql`
       query getUsers( 
@@ -96,8 +102,12 @@ const GetData = props => {
         }
       }
       `;
-  } else if (props.index.query === "Users" && props.crossFilter.query === "Sessions" && !props.additionalFilter.type) {
-    queryType = "sessionsData"
+  } else if (
+    props.index.query === "Users" &&
+    props.crossFilter.query === "Sessions" &&
+    !props.additionalFilter.type
+  ) {
+    queryType = "sessionsData";
     QUERY = gql`
       query getData(
         $age: String,
@@ -145,9 +155,13 @@ const GetData = props => {
           ${props.crossFilter.type}
           created_date
         }
-      }`
-  } else if(props.index.query === "Users" && props.crossFilter.query === "Sessions" && !props.additionalFilter.type) {
-    queryType = "sessionsData"
+      }`;
+  } else if (
+    props.index.query === "Users" &&
+    props.crossFilter.query === "Sessions" &&
+    !props.additionalFilter.type
+  ) {
+    queryType = "sessionsData";
     QUERY = gql`
       query getData(
         $age: String,
@@ -195,8 +209,12 @@ const GetData = props => {
           ${props.crossFilter.type}
           created_date
         }
-      }`
-  } else if (props.index.query === "Sessions" && props.crossFilter.query === "Sessions" && !props.additionalFilter.type) {
+      }`;
+  } else if (
+    props.index.query === "Sessions" &&
+    props.crossFilter.query === "Sessions" &&
+    !props.additionalFilter.type
+  ) {
     queryType = "sessionsData";
     QUERY = gql`
       query getData( 
@@ -247,7 +265,11 @@ const GetData = props => {
         }
       }
       `;
-  } else if (props.index.query === "Sessions" && props.crossFilter.query === "Sessions" && !props.additionalFilter.type) {
+  } else if (
+    props.index.query === "Sessions" &&
+    props.crossFilter.query === "Sessions" &&
+    !props.additionalFilter.type
+  ) {
     queryType = "sessionsData";
     QUERY = gql`
       query getUsers( 
@@ -347,26 +369,36 @@ const GetData = props => {
           ${props.crossFilter.type}
           created_date
         }
-        additionalFilterData:sessionsData{
-            ${props.additionalFilter.type}
-        }
+        # additionalFilterData:sessionsData{
+        #     ${props.additionalFilter.type}
+        # }
       }
       `;
   }
+  //{language: "Swahili"}
+  //, language: "English"
+const age = {age: "20-30"}
+const language = {language: "English"}
+//const education = {education: "Primary"}
+const gender = {gender: "Female"}
+const together = {...gender, ...language}
+console.log(together)
 
   let policyType;
-  if (props.additionalFilter.type && !graphLabels[`${props.additionalFilter.type}`]) {
+  if (
+    props.additionalFilter.type &&
+    !graphLabels[`${props.additionalFilter.type}`]
+  ) {
     policyType = "network-only";
   } else {
     policyType = "cache-first";
   }
-
+//console.log(props.selectedCheckbox)
   let { loading, data } = useQuery(QUERY, {
-
-    variables: { ...props.selectedCheckbox },
+    variables: {...props.allSelected},
     fetchPolicy: policyType
   });
-
+console.log(`Og data`,data)
   if (loading) {
     return (
       <div className="loader-container">
@@ -381,15 +413,28 @@ const GetData = props => {
     );
   }
   // data = [...data.tradersUsers, ...data.tradersData] // This is for when we are supporting multiple queries of same type
-
+// console.log(`additionalFilter.type`,props.additionalFilter)
+// console.log(`graphLables`, graphLabels[`${props.additionalFilter.type}`])
   let filteredData;
   // This is how we nab checkbox options.
-  if (props.additionalFilter.type && !graphLabels[`${props.additionalFilter.type}`]) {
-    removeMultiple(data.additionalFilterData)
-    filteredData = getIndex(data.additionalFilterData, `${props.additionalFilter.type}`).map(obj => obj[`${props.additionalFilter.type}`]);
-    filteredData = filteredData.filter(item => item !== null)
-  };
-
+  if (
+    props.additionalFilter.type &&
+    !graphLabels[`${props.additionalFilter.type}`]
+  ) {
+    removeMultiple(data.additionalFilterData);
+    filteredData = getIndex(
+      data.additionalFilterData,
+      `${props.additionalFilter.type}`
+    ).map(obj => obj[`${props.additionalFilter.type}`]);
+    filteredData = filteredData.filter(item => item !== null);
+  }
+// console.log(`data.additionalFilterData`, data.additionalFilterData)
+//console.log(`props.index.type`,props.index.type)
+//console.log(`dataqueryType`,data[`${queryType}`])
+//console.log(`props.crossFilter.type`,props.crossFilter.type)
+//console.log(`props.additionalFilter.type`,props.additionalFilter.type)
+//console.log(`props.index.query`,props.index.query)
+ 
   const chartData = dataParse(
     props.index.type,
     data[`${queryType}`],
@@ -399,16 +444,21 @@ const GetData = props => {
     props.additionalFilter.type,
     props.index.query
   ); /// first arg is what we are indexing by, second is data, third is what we are cross-filtering by. Will get changed to dynamic inputs
-
+console.log(chartData.dataStructure)
   if (props.crossFilter.type !== "") {
     return (
       <div>
         <h1 className="graph-title">
           {props.label} by {props.crossLabel}
         </h1>
-        {props.additionalFilter.type &&
-          <h3 className="graph-title-small">Additional Filter: {props.additionalFilter.label} - {Object.values(props.selectedCheckbox).length === 0 ? "none" : Object.values(props.selectedCheckbox)[0]}</h3>
-        }
+        {props.additionalFilter.type && (
+          <h3 className="graph-title-small">
+            Additional Filter: {props.additionalFilter.label} -{" "}
+            {Object.values(props.selectedCheckbox).length === 0
+              ? "none"
+              : Object.values(props.selectedCheckbox)[0]}
+          </h3>
+        )}
 
         <Graph
           data={chartData.percentageData}
@@ -431,9 +481,14 @@ const GetData = props => {
     return (
       <div>
         <h1 className="graph-title">{props.label}</h1>
-        {props.additionalFilter.type &&
-          <h3 className="graph-title-small">Additional Filter: {props.additionalFilter.label} - {Object.values(props.selectedCheckbox).length === 0 ? "none" : Object.values(props.selectedCheckbox)[0]}</h3>
-        }
+        {props.additionalFilter.type && (
+          <h3 className="graph-title-small">
+            Additional Filter: {props.additionalFilter.label} -{" "}
+            {Object.values(props.selectedCheckbox).length === 0
+              ? "none"
+              : Object.values(props.selectedCheckbox)[0]}
+          </h3>
+        )}
         <Graph
           data={chartData.percentageData}
           csvData={chartData.dataStructure}

@@ -16,9 +16,17 @@ const App = () => {
   const [crossLabel, setCrossLabel] = useState("");
   const [checkboxOptions, setCheckboxOptions] = useState([]);
   const [selectedCheckbox, setSelectedCheckbox] = useState({});
+  console.log(selectedCheckbox)
+  const [selectedCheckboxCross, setSelectedCheckboxCross] = useState({});
+  console.log(selectedCheckboxCross)
+  const [selectedCheckboxIndex, setSelectedCheckboxIndex] = useState({});
+  console.log(selectedCheckboxIndex)
   const [startDate, setStartDate] = useState("2012-01-01");
   const [endDate, setEndDate] = useState("2020-01-08");
 
+const allSelected = {...selectedCheckbox, ...selectedCheckboxCross, ...selectedCheckboxIndex}
+console.log(`allSelected`,allSelected)
+  
   // useEffect(() => {
   //   ReactGa.initialize("UA-155468784-1");
   //   //to report specified pageview:
@@ -50,6 +58,7 @@ const App = () => {
               crossLabel={crossLabel}
               selectedCheckbox={selectedCheckbox}
               checkboxOptions={checkboxOptions}
+              allSelected={allSelected}
               setCheckboxOptions={setCheckboxOptions}
               additionalFilter={additionalFilter}
               startDate={startDate}
@@ -68,6 +77,8 @@ const App = () => {
               setIndexLabel={setIndexLabel}
               setCrossLabel={setCrossLabel}
               setSelectedCheckbox={setSelectedCheckbox}
+              setSelectedCheckboxCross={setSelectedCheckboxCross}
+              setSelectedCheckboxIndex={setSelectedCheckboxIndex}
               setCheckboxOptions={setCheckboxOptions}
               setAdditionalFilter={setAdditionalFilter}
               startDate={startDate}

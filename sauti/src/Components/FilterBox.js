@@ -65,7 +65,7 @@ export default function FilterBox(props) {
   return (
     <DropdownContainer>
       <form>
-        <p>Choose Category</p>
+        <p>Choose Category X-axis</p>
         <Dropdown
           controlClassName="myControlClassName"
           arrowClassName="myArrowClassName"
@@ -79,8 +79,29 @@ export default function FilterBox(props) {
             ClickTracker(e.value.type);
           }}
         />
+         {/* renamed filterBoxIndex */}
+                   {graphLabels[`${filterBoxIndex.type}`] && (
+          <CheckboxContainer>
+            <p>Select an option to further filter the data: </p>
+            {graphLabels[`${filterBoxIndex.type}`].labels.map((option => (
+              <Options key={option}>
+                <input
+                  type="radio"
+                  name="CrossFilter"
+                  value={option}
+                  onChange={e => (
+                    props.setSelectedCheckboxIndex({ [`${filterBoxIndex.type}`]: option })
+                    //, props.setAdditionalFilter(filterBoxCrossFilter)
+                  )}
+                />
+                <FilterOption>{option}</FilterOption>
+              </Options>
+            ))
+            )}
+          </CheckboxContainer>
+        )}
 
-        <p>Choose Second Category</p>
+        <p>Choose Second Category Y-axis</p>
         <Dropdown
           controlClassName="myControlClassName"
           arrowClassName="myArrowClassName"
@@ -94,6 +115,63 @@ export default function FilterBox(props) {
             setFilterBoxCrossFilter(e.value);
           }}
         />
+        {/* renamed filterBoxCrossFilter */}
+                {graphLabels[`${filterBoxCrossFilter.type}`] && (
+          <CheckboxContainer>
+            <p>Select an option to further filter the data: </p>
+            {graphLabels[`${filterBoxCrossFilter.type}`].labels.map((option => (
+              <Options key={option}>
+                <input
+                  type="radio"
+                  name="CrossFilter"
+                  value={option}
+                  onChange={e => (
+                    props.setSelectedCheckboxCross({ [`${filterBoxCrossFilter.type}`]: option })
+                    //, props.setAdditionalFilter(filterBoxCrossFilter)
+                  )}
+                />
+                <FilterOption>{option}</FilterOption>
+              </Options>
+            ))
+            )}
+          </CheckboxContainer>
+        )}
+{/* 
+        {loading
+          ? (
+            <Loader
+              className="options-loader"
+              type="Oval"
+              color="#708090"
+              width={50}
+              height={20}
+              timeout={12000}
+            />
+          )
+          : props.checkboxOptions.length > 1 && (
+            <>
+              <p>Select an option to further filter the data: </p>
+              <CheckboxContainer>
+                {(props.checkboxOptions.map(option => (
+                  <Options key={option}>
+                    <input
+                      type="radio"
+                      name="CrossFilter"
+                      value={option}
+                      onChange={e => {
+                        props.setSelectedCheckboxCross({ [`${filterBoxCrossFilter.type}`]: option },
+                        props.setAdditionalFilter(filterBoxCrossFilter)
+                        )
+                      }}
+                    />
+                    <FilterOption>{option}</FilterOption>
+                  </Options>
+                ))
+                )}
+              </CheckboxContainer> */}
+            {/* </>
+          )
+        } */}
         <>
           <p>Additional Filter</p>
           <p className='disclosure'>*This optional filter adjusts samplesize and may not always alter the graph appearance.</p>
@@ -102,9 +180,12 @@ export default function FilterBox(props) {
             arrowClassName="myArrowClassName"
             className="dropdown"
             disabled={loading}
+            //filter previously selected
             options={FilterBoxOptions.default.filter(obj => (obj.label !== filterBoxIndexLabel && obj.label !== filterBoxCrossLabel))}
+            //selected value 
             value={filterBoxAdditionalFilterLabel}
             placeholder="Select a filter..."
+
             onChange={e => {
               setFilterBoxAdditionalFilter({ type: e.value.type, query: e.value.query, label: e.label })
               setFilterBoxAdditionalFilterLabel(e.label);
@@ -119,6 +200,8 @@ export default function FilterBox(props) {
             props.setAdditionalFilter({ type: '', query: '' });
             props.setCheckboxOptions([]);
             props.setSelectedCheckbox({})
+            props.setSelectedCheckboxCross({})
+            props.setSelectedCheckboxIndex({})
           }}>
             <p>Clear Additional Filter</p>
           </div>
@@ -147,7 +230,7 @@ export default function FilterBox(props) {
           </CheckboxContainer>
         )}
 
-        {loading
+        {/* {loading
           ? (
             <Loader
               className="options-loader"
@@ -181,7 +264,7 @@ export default function FilterBox(props) {
               </CheckboxContainer>
             </>
           )
-        }
+        } */}
 
         {(filterBoxIndex.query === "Sessions" || filterBoxAdditionalFilter.query === 'Sessions') && (
           <DateContainer>
@@ -241,6 +324,8 @@ export default function FilterBox(props) {
             props.setEndDate("2020-01-08");
             props.setCheckboxOptions([]);
             props.setSelectedCheckbox({})
+            props.setSelectedCheckboxCross({})
+            props.setSelectedCheckboxIndex({})
             setFilterBoxIndexLabel("Gender");
             setFilterBoxIndex({ type: "gender", query: "Users" });
             setFilterBoxCrossLabel("");

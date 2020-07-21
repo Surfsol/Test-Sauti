@@ -14,7 +14,7 @@ const setCrossedItems = (data, dataStructure, crossFilter, indexBy, additionalFi
     //will be used to store array of objects, where the key will be what is being cross filtered by / "crossFilter"
     // and the value is every possible value for that cross filter in the database
     let crossFilterKeys = [];
-  
+  console.log(`Set cross items`,data, dataStructure, crossFilter, indexBy, additionalFilter)
     // IF NOT A "MOST REQUESTED" GRAPH, SETS THE KEYS IN A PREDETERMINED ORDER BASED ON WHAT ORDER LANCE WANTS THEM IN
     // OTHERWISE IT IS GOING TO BE SORTED MOST TO LEAST REQUESTED AT A LATER TIME
     if (graphLabels[`${crossFilter}`]) {
@@ -207,6 +207,8 @@ const setCrossedItems = (data, dataStructure, crossFilter, indexBy, additionalFi
   
     //This is the sampleSize of all responses {"Male": 153, "Female": 124 => totalSampleSize: 277}
     let totalSampleSize = Object.values(sampleArr).reduce((a, b) => a + b);
+    console.log(`totalSampleSize`,totalSampleSize)
+  
   
     //CHANGE VALUES TO PERCENTAGE OF SAMPLE SIZE
     //[{gender: "Male", "10-20": 200, "20-30": 150},{gender: "Female", "10-20": 140, "20-30": 100}]
